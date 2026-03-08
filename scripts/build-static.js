@@ -31,7 +31,7 @@ try {
 }
 
 // 读取样式
-t let styleContent = '';
+let styleContent = '';
 try {
   if (fs.existsSync(styleFile)) {
     styleContent = fs.readFileSync(styleFile, 'utf8');
