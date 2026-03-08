@@ -1,0 +1,100 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+  schedule:
+    # 每15分钟执行一次（GitHub 推荐最小间隔）
+    - cron: '*/15 * * * *'
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Restore cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          node_modules
+          data
+        key: cache-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          cache-${{ runner.os }}-
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Fetch server status
+      run: node scripts/fetch-status.js
+      continue-on-error: true
+
+    - name: Build static site
+      run: node scripts/build-static.js
+
+    - name: Save status data
+      uses: actions/cache@v3
+      with:
+        path: data
+        key: server-status-${{ github.run_number }}
+
+    - name: Commit status history
+      if: github.actor != 'github-actions[bot]'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+        git add data || true
+
+        if ! git diff --cached --quiet; then
+          git commit -m "Update server status"
+          git push
+        fi
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload Pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Print deployment URL
+        run: |
+          echo "Site URL:"
+          echo ${{ steps.deployment.outputs.page_url }}
