@@ -8,7 +8,7 @@
 <link rel="shortcut icon" type="image/png" href="server-icon.png">
 <link rel="apple-touch-icon" href="server-icon.png">
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 
 <body>
@@ -403,6 +403,26 @@ function copyAddress(addr, btn) {
     setTimeout(function() { btn.innerHTML = "📋 复制地址"; }, 2000);
   });
 }
+
+// 头像加载失败时使用备用源
+function setupAvatarFallback() {
+  document.querySelectorAll('img[alt]').forEach(function(img) {
+    img.onerror = function() {
+      // 如果 mc-heads.net 失败，尝试 Cravatar
+      if (this.src.includes('mc-heads.net')) {
+        var username = this.alt;
+        this.src = 'https://cravatar.eu/helmavatar/' + username + '/32.png';
+      }
+      // 如果还是失败，使用默认头像
+      this.onerror = function() {
+        this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect fill="%23ccc" width="32" height="32"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="16">?</text></svg>';
+      };
+    };
+  });
+}
+
+// 页面加载完成后设置头像 fallback
+document.addEventListener('DOMContentLoaded', setupAvatarFallback);
 </script>
 {{CHART_SCRIPT}}
 
