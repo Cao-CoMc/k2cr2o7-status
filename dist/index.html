@@ -8,7 +8,7 @@
 <link rel="shortcut icon" type="image/png" href="server-icon.png">
 <link rel="apple-touch-icon" href="server-icon.png">
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="./assets/chart.min.js"></script>
 </head>
 
 <body>
@@ -17,12 +17,12 @@
 <div class="overlay">
 <h1>K2Cr2O7 Server</h1>
 <p class="subtitle">用重铬酸钾的能量，点燃你的工业灵感</p>
-<p style="font-size:12px;opacity:0.6;margin-top:10px;">更新时间：<span id="updateTime">2026/3/8 10:10:29</span> | 节点：3/3 在线</p>
+<p style="font-size:12px;opacity:0.6;margin-top:10px;">更新时间：<span id="updateTime">2026/3/8 10:33:52</span> | 节点：3/3 在线</p>
 
 <div class="status">
 状态：<span id="serverStatus" class="online">🟢 在线</span>
 <br>
-在线人数：<span id="playerCount">6</span>
+在线人数：<span id="playerCount">3</span>
 </div>
 </div>
 </header>
@@ -49,34 +49,28 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
   <div class="server-node online" data-node-id="shandong">
     <div class="node-header">
       <span class="node-region">📍 山东节点</span>
-      <span class="node-status online">🟢 在线 (253ms)</span>
+      <span class="node-status online">🟢 在线 (222ms)</span>
     </div>
     <div class="node-address">frp-ten.com:57232</div>
-    <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">
-      在线：2/50 人
-    </div>
+    <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">在线：1/50 人</div>
     <button class="copy-btn" onclick="copyAddress('frp-ten.com:57232', this)">📋 复制地址</button>
   </div>
   <div class="server-node online" data-node-id="jiangsu">
     <div class="node-header">
       <span class="node-region">📍 江苏节点</span>
-      <span class="node-status online">🟢 在线 (238ms)</span>
+      <span class="node-status online">🟢 在线 (203ms)</span>
     </div>
     <div class="node-address">frp-web.com:40319</div>
-    <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">
-      在线：2/50 人
-    </div>
+    <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">在线：1/50 人</div>
     <button class="copy-btn" onclick="copyAddress('frp-web.com:40319', this)">📋 复制地址</button>
   </div>
   <div class="server-node online" data-node-id="hubei">
     <div class="node-header">
       <span class="node-region">📍 湖北节点</span>
-      <span class="node-status online">🟢 在线 (284ms)</span>
+      <span class="node-status online">🟢 在线 (189ms)</span>
     </div>
     <div class="node-address">frp-tag.com:19158</div>
-    <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">
-      在线：2/50 人
-    </div>
+    <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">在线：1/50 人</div>
     <button class="copy-btn" onclick="copyAddress('frp-tag.com:19158', this)">📋 复制地址</button>
   </div>
 </div>
@@ -200,6 +194,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 <section>
 <h2>📈 在线人数时间轴</h2>
 <ul id="timeline">
+  <li><span class="time">10:33</span><span class="count">1 玩家</span></li>
   <li><span class="time">10:10</span><span class="count">2 玩家</span></li>
   <li><span class="time">10:01</span><span class="count">2 玩家</span></li>
   <li><span class="time">09:37</span><span class="count">2 玩家</span></li>
@@ -211,8 +206,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 <section>
 <h2>👥 当前在线玩家</h2>
 <ul id="players">
-  <li><img src="https://mc-heads.net/avatar/air/32" alt="air" loading="lazy">air</li>
-  <li><img src="https://mc-heads.net/avatar/Anonymous Player/32" alt="Anonymous Player" loading="lazy">Anonymous Player</li>
+  <li><img src="https://mc-heads.net/avatar/air/32" alt="air" loading="lazy" onerror="this.src='https://cravatar.eu/helmavatar/air/32.png'; this.onerror=function(){this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect fill=%22%23ccc%22 width=%2232%22 height=%2232%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2216%22>?</text></svg>';}">air</li>
 </ul>
 </section>
 
@@ -414,7 +408,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 
 <footer>
 <p>K2Cr2O7 Server © 2026</p>
-<p style="font-size:12px;opacity:0.5">自动构建于 2026/3/8 10:10:29</p>
+<p style="font-size:12px;opacity:0.5">自动构建于 2026/3/8 10:33:52</p>
 </footer>
 
 <script>
@@ -440,49 +434,35 @@ function copyAddress(addr, btn) {
     setTimeout(function() { btn.innerHTML = "📋 复制地址"; }, 2000);
   });
 }
+
+// 头像加载失败时使用备用源
+function setupAvatarFallback() {
+  document.querySelectorAll('img[alt]').forEach(function(img) {
+    img.onerror = function() {
+      // 如果 mc-heads.net 失败，尝试 Cravatar
+      if (this.src.includes('mc-heads.net')) {
+        var username = this.alt;
+        this.src = 'https://cravatar.eu/helmavatar/' + username + '/32.png';
+      }
+      // 如果还是失败，使用默认头像
+      this.onerror = function() {
+        this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect fill="%23ccc" width="32" height="32"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="16">?</text></svg>';
+      };
+    };
+  });
+}
+
+// 页面加载完成后设置头像 fallback
+document.addEventListener('DOMContentLoaded', setupAvatarFallback);
 </script>
 <script>
 (function() {
-  const labels = ["09:15","09:23","09:37","10:01","10:10"];
-  const data = [1,1,2,2,2];
+  const labels = ["09:15","09:23","09:37","10:01","10:10","10:33"]; const data = [1,1,2,2,2,1];
   if (labels.length === 0) return;
-
-  const ctx = document.getElementById('chart').getContext('2d');
-  new Chart(ctx, {
+  new Chart(document.getElementById('chart').getContext('2d'), {
     type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: '在线人数',
-        data: data,
-        borderColor: '#4da6ff',
-        backgroundColor: 'rgba(77,166,255,0.1)',
-        tension: 0.3,
-        fill: true,
-        pointRadius: 3,
-        pointBackgroundColor: '#4da6ff'
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { 
-          display: true,
-          labels: { color: '#e0e0e0' }
-        }
-      },
-      scales: {
-        y: { 
-          beginAtZero: true, 
-          ticks: { color: '#a0b0c0' },
-          grid: { color: 'rgba(255,255,255,0.1)' }
-        },
-        x: { 
-          ticks: { color: '#a0b0c0' },
-          grid: { color: 'rgba(255,255,255,0.05)' }
-        }
-      }
-    }
+    data: { labels: labels, datasets: [{ label: '在线人数', data: data, borderColor: '#4da6ff', backgroundColor: 'rgba(77,166,255,0.1)', tension: 0.3, fill: true, pointRadius: 3, pointBackgroundColor: '#4da6ff' }] },
+    options: { responsive: true, plugins: { legend: { display: true, labels: { color: '#e0e0e0' } } }, scales: { y: { beginAtZero: true, ticks: { color: '#a0b0c0' }, grid: { color: 'rgba(255,255,255,0.1)' } }, x: { ticks: { color: '#a0b0c0' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
   });
 })();
 </script>
