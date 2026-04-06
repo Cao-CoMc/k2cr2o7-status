@@ -17,12 +17,12 @@
 <div class="overlay">
 <h1>K2Cr2O7 Server</h1>
 <p class="subtitle">用重铬酸钾的能量，点燃你的工业灵感</p>
-<p style="font-size:12px;opacity:0.6;margin-top:10px;">更新时间：<span id="updateTime">2026/4/6 05:50:12</span> | 节点：3/3 在线</p>
+<p style="font-size:12px;opacity:0.6;margin-top:10px;">更新时间：<span id="updateTime">2026/4/6 07:19:30</span> | 节点：3/3 在线</p>
 
 <div class="status">
 状态：<span id="serverStatus" class="online">🟢 在线</span>
 <br>
-在线人数：<span id="playerCount">3</span>
+在线人数：<span id="playerCount">0</span>
 </div>
 </div>
 </header>
@@ -49,28 +49,28 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
   <div class="server-node online" data-node-id="shandong">
     <div class="node-header">
       <span class="node-region">📍 山东节点</span>
-      <span class="node-status online">🟢 在线 (244ms)</span>
+      <span class="node-status online">🟢 在线 (278ms)</span>
     </div>
     <div class="node-address">frp-ten.com:57232</div>
-    <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">在线：1/50 人</div>
+    <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">在线：0/50 人</div>
     <button class="copy-btn" onclick="copyAddress('frp-ten.com:57232', this)">📋 复制地址</button>
   </div>
   <div class="server-node online" data-node-id="jiangsu">
     <div class="node-header">
       <span class="node-region">📍 江苏节点</span>
-      <span class="node-status online">🟢 在线 (229ms)</span>
+      <span class="node-status online">🟢 在线 (284ms)</span>
     </div>
     <div class="node-address">frp-web.com:40319</div>
-    <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">在线：1/50 人</div>
+    <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">在线：0/50 人</div>
     <button class="copy-btn" onclick="copyAddress('frp-web.com:40319', this)">📋 复制地址</button>
   </div>
   <div class="server-node online" data-node-id="hubei">
     <div class="node-header">
       <span class="node-region">📍 湖北节点</span>
-      <span class="node-status online">🟢 在线 (259ms)</span>
+      <span class="node-status online">🟢 在线 (312ms)</span>
     </div>
     <div class="node-address">frp-tag.com:19158</div>
-    <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">在线：1/50 人</div>
+    <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">在线：0/50 人</div>
     <button class="copy-btn" onclick="copyAddress('frp-tag.com:19158', this)">📋 复制地址</button>
   </div>
 </div>
@@ -194,6 +194,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 <section>
 <h2>📈 在线人数时间轴</h2>
 <ul id="timeline">
+  <li><span class="time">07:19</span><span class="count">0 玩家</span></li>
   <li><span class="time">05:50</span><span class="count">1 玩家</span></li>
   <li><span class="time">03:38</span><span class="count">0 玩家</span></li>
   <li><span class="time">00:02</span><span class="count">0 玩家</span></li>
@@ -223,14 +224,13 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
   <li><span class="time">09:41</span><span class="count">0 玩家</span></li>
   <li><span class="time">08:59</span><span class="count">0 玩家</span></li>
   <li><span class="time">08:03</span><span class="count">0 玩家</span></li>
-  <li><span class="time">07:21</span><span class="count">0 玩家</span></li>
 </ul>
 </section>
 
 <section>
 <h2>👥 当前在线玩家</h2>
 <ul id="players">
-  <li><img src="https://mc-heads.net/avatar/Anonymous Player/32" alt="Anonymous Player" loading="lazy" onerror="this.src='https://cravatar.eu/helmavatar/Anonymous Player/32.png'; this.onerror=function(){this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect fill=%22%23ccc%22 width=%2232%22 height=%2232%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2216%22>?</text></svg>';}">Anonymous Player</li>
+<li>暂无玩家在线</li>
 </ul>
 </section>
 
@@ -432,7 +432,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 
 <footer>
 <p>K2Cr2O7 Server © 2026</p>
-<p style="font-size:12px;opacity:0.5">自动构建于 2026/4/6 05:50:12</p>
+<p style="font-size:12px;opacity:0.5">自动构建于 2026/4/6 07:19:30</p>
 </footer>
 
 <script>
@@ -481,7 +481,7 @@ document.addEventListener('DOMContentLoaded', setupAvatarFallback);
 </script>
 <script>
 (function() {
-  const labels = ["07:21","08:03","08:59","09:41","10:06","10:53","11:22","11:50","12:38","13:40","14:20","14:59","15:37","16:01","16:52","17:22","17:54","18:31","19:21","19:53","20:22","20:56","21:27","21:55","22:21","22:57","23:31","00:02","03:38","05:50"]; const data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1];
+  const labels = ["08:03","08:59","09:41","10:06","10:53","11:22","11:50","12:38","13:40","14:20","14:59","15:37","16:01","16:52","17:22","17:54","18:31","19:21","19:53","20:22","20:56","21:27","21:55","22:21","22:57","23:31","00:02","03:38","05:50","07:19"]; const data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0];
   if (labels.length === 0) return;
   new Chart(document.getElementById('chart').getContext('2d'), {
     type: 'line',
