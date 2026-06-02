@@ -8,7 +8,7 @@
 <link rel="shortcut icon" type="image/png" href="server-icon.png">
 <link rel="apple-touch-icon" href="server-icon.png">
 <link rel="stylesheet" href="style.css">
-<script src="./assets/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 /* 全局：背景图时刻在背后，大面积降低遮罩浓稠度 */
 body {
@@ -243,10 +243,10 @@ canvas#chart {
 <div class="overlay">
 <h1>K2Cr2O7 Server</h1>
 <p class="subtitle">用重铬酸钾的能量，点燃你的工业灵感</p>
-<p style="font-size:12px;opacity:0.8;margin-top:10px;">更新时间：<span id="updateTime"></span> | 节点：3/3 在线</p>
+<p style="font-size:12px;opacity:0.8;margin-top:10px;">更新时间：<span id="updateTime">2026/6/2 08:20:06</span> | 节点：3/3 在线</p>
 
 <div class="status">
-状态：<span id="serverStatus" class="status-online">正常运行中</span>
+状态：<span id="serverStatus" class="online">正常</span>
 <br>
 在线人数：<span id="playerCount">0</span>
 </div>
@@ -295,50 +295,39 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 
 <div class="server-nodes">
 
-      <div class="node-card">
-        <div class="node-header">
-          <h3>山东节点</h3>
-          <span class="node-status online">🟢 在线</span>
+      <div class="node-card online">
+        <h3>山东节点</h3>
+        <p class="node-meta">frp-ten.com:57232</p>
+        <div class="node-status-block">
+          <span class="node-status-tag online">🟢 在线</span>
+          <span class="node-latency">undefinedms</span>
         </div>
-        <div class="node-body">
-          <p><strong>地址：</strong><code>frp-ten.com:57232</code> <button class="btn-copy" onclick="copyAddress('frp-ten.com:57232', this)">📋 复制地址</button></p>
-          
-            <p><strong>版本：</strong>1.20.1</p>
-            <p><strong>延迟：</strong>263ms</p>
-            <p><strong>玩家：</strong><span class="highlight">0/20</span></p>
-          
+        <div class="node-players">
+          在线: <strong>0</strong> / 20
         </div>
       </div>
     
-
-      <div class="node-card">
-        <div class="node-header">
-          <h3>江苏节点</h3>
-          <span class="node-status online">🟢 在线</span>
+      <div class="node-card online">
+        <h3>江苏节点</h3>
+        <p class="node-meta">frp-web.com:40319</p>
+        <div class="node-status-block">
+          <span class="node-status-tag online">🟢 在线</span>
+          <span class="node-latency">undefinedms</span>
         </div>
-        <div class="node-body">
-          <p><strong>地址：</strong><code>frp-web.com:40319</code> <button class="btn-copy" onclick="copyAddress('frp-web.com:40319', this)">📋 复制地址</button></p>
-          
-            <p><strong>版本：</strong>1.20.1</p>
-            <p><strong>延迟：</strong>232ms</p>
-            <p><strong>玩家：</strong><span class="highlight">0/20</span></p>
-          
+        <div class="node-players">
+          在线: <strong>0</strong> / 20
         </div>
       </div>
     
-
-      <div class="node-card">
-        <div class="node-header">
-          <h3>湖北节点</h3>
-          <span class="node-status online">🟢 在线</span>
+      <div class="node-card online">
+        <h3>湖北节点</h3>
+        <p class="node-meta">frp-tag.com:19158</p>
+        <div class="node-status-block">
+          <span class="node-status-tag online">🟢 在线</span>
+          <span class="node-latency">undefinedms</span>
         </div>
-        <div class="node-body">
-          <p><strong>地址：</strong><code>frp-tag.com:19158</code> <button class="btn-copy" onclick="copyAddress('frp-tag.com:19158', this)">📋 复制地址</button></p>
-          
-            <p><strong>版本：</strong>1.20.1</p>
-            <p><strong>延迟：</strong>269ms</p>
-            <p><strong>玩家：</strong><span class="highlight">0/20</span></p>
-          
+        <div class="node-players">
+          在线: <strong>0</strong> / 20
         </div>
       </div>
     
@@ -452,222 +441,103 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 <h2>📈 在线人数时间轴</h2>
 <ul id="timeline">
 
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 0 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 2 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 1 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 1 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 1 人</span>
-      </li>
-    
-
-      <li>
-        <span class="time"></span>
-        <span class="event">服务器状态检查完成</span>
-        <span class="count">全网在线: 1 人</span>
-      </li>
-    
+    <li data-timestamp="2026-06-01T02:00:21.388Z">
+      <span class="time-label">2026-06-01T02:00:21.388Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>1</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-01T07:20:55.759Z">
+      <span class="time-label">2026-06-01T07:20:55.759Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>1</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-01T13:08:17.054Z">
+      <span class="time-label">2026-06-01T13:08:17.054Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>2</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-01T18:49:13.430Z">
+      <span class="time-label">2026-06-01T18:49:13.430Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>0</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-01T21:56:56.525Z">
+      <span class="time-label">2026-06-01T21:56:56.525Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>0</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-01T23:25:01.265Z">
+      <span class="time-label">2026-06-01T23:25:01.265Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>0</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-02T01:43:07.194Z">
+      <span class="time-label">2026-06-02T01:43:07.194Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>0</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-02T06:21:39.405Z">
+      <span class="time-label">2026-06-02T06:21:39.405Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>0</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-02T06:43:04.695Z">
+      <span class="time-label">2026-06-02T06:43:04.695Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>0</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-02T06:52:03.689Z">
+      <span class="time-label">2026-06-02T06:52:03.689Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>0</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-02T06:53:23.593Z">
+      <span class="time-label">2026-06-02T06:53:23.593Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>0</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-02T06:58:39.161Z">
+      <span class="time-label">2026-06-02T06:58:39.161Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>0</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-02T07:05:13.135Z">
+      <span class="time-label">2026-06-02T07:05:13.135Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>0</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-02T07:12:07.792Z">
+      <span class="time-label">2026-06-02T07:12:07.792Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>0</strong></span>
+    </li>
+  
+    <li data-timestamp="2026-06-02T07:17:00.001Z">
+      <span class="time-label">2026-06-02T07:17:00.001Z</span>
+      <span class="node-tag">山东节点</span>
+      <span class="count">在线人数: <strong>0</strong></span>
+    </li>
+  
 </ul>
 </section>
 
 <section>
 <h2>👥 当前在线玩家</h2>
 <ul id="players">
-<p style="text-align:center; opacity:0.6; padding: 20px;">当前暂无在线玩家</p>
+<p style="color:#64748b;font-size:14px;">当前暂无玩家在线</p>
 </ul>
 </section>
 
@@ -874,7 +744,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 
 <footer>
 <p>K2Cr2O7 Server Pack Powered by sankuchuari & luobo0x00 © 2026</p>
-<p style="font-size:12px;opacity:0.4">自动构建于 2026/6/2 16:15:17 (北京时间)</p>
+<p style="font-size:12px;opacity:0.4">自动构建于 2026/6/2 08:20:06</p>
 </footer>
 
 <script>
@@ -919,68 +789,59 @@ document.addEventListener('DOMContentLoaded', setupAvatarFallback);
 
 
     const ctx = document.getElementById('statusChart').getContext('2d');
-    new Chart(ctx, {
+    window.activeChartInstance = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-        datasets: [
-      {
-        label: '山东节点',
-        data: [1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        borderColor: '#4caf50',
-        backgroundColor: 'rgba(76, 175, 80, 0.1)',
-        borderWidth: 2,
-        fill: true,
-        tension: 0.3,
-        pointRadius: 2,
-        pointHoverRadius: 5
-      },
-
-      {
-        label: '江苏节点',
-        data: [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        borderColor: '#2196f3',
-        backgroundColor: 'rgba(33, 150, 243, 0.1)',
-        borderWidth: 2,
-        fill: true,
-        tension: 0.3,
-        pointRadius: 2,
-        pointHoverRadius: 5
-      },
-
-      {
-        label: '湖北节点',
-        data: [1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        borderColor: '#ff9800',
-        backgroundColor: 'rgba(255, 152, 0, 0.1)',
-        borderWidth: 2,
-        fill: true,
-        tension: 0.3,
-        pointRadius: 2,
-        pointHoverRadius: 5
-      }]
+        labels: [2026-06-01T02:00:21.388Z, 2026-06-01T07:20:55.759Z, 2026-06-01T13:08:17.054Z, 2026-06-01T18:49:13.430Z, 2026-06-01T21:56:56.525Z, 2026-06-01T23:25:01.265Z, 2026-06-02T01:43:07.194Z, 2026-06-02T06:21:39.405Z, 2026-06-02T06:43:04.695Z, 2026-06-02T06:52:03.689Z, 2026-06-02T06:53:23.593Z, 2026-06-02T06:58:39.161Z, 2026-06-02T07:05:13.135Z, 2026-06-02T07:12:07.792Z, 2026-06-02T07:17:00.001Z, 2026-06-02T07:25:21.562Z, 2026-06-02T07:26:02.448Z, 2026-06-02T07:30:27.231Z, 2026-06-02T07:35:02.768Z, 2026-06-02T07:35:38.839Z, 2026-06-02T07:41:27.864Z, 2026-06-02T07:44:23.635Z, 2026-06-02T07:51:17.690Z, 2026-06-02T07:55:02.456Z, 2026-06-02T08:02:13.013Z, 2026-06-02T08:02:57.469Z, 2026-06-02T08:09:53.168Z, 2026-06-02T08:15:13.608Z, 1780388364840, 1780388401533],
+        datasets: [{
+      label: '山东节点',
+      data: [1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      borderColor: '#4caf50',
+      backgroundColor: 'rgba(76, 175, 80, 0.1)',
+      borderWidth: 2,
+      fill: true,
+      tension: 0.3,
+      pointRadius: 2,
+      pointHoverRadius: 5
+    },
+{
+      label: '江苏节点',
+      data: [0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      borderColor: '#2196f3',
+      backgroundColor: 'rgba(33, 150, 243, 0.1)',
+      borderWidth: 2,
+      fill: true,
+      tension: 0.3,
+      pointRadius: 2,
+      pointHoverRadius: 5
+    },
+{
+      label: '湖北节点',
+      data: [1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      borderColor: '#ff9800',
+      backgroundColor: 'rgba(255, 152, 0, 0.1)',
+      borderWidth: 2,
+      fill: true,
+      tension: 0.3,
+      pointRadius: 2,
+      pointHoverRadius: 5
+    }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: {
-            position: 'top',
-            labels: { color: '#e0e0e0', font: { family: '-apple-system' } }
-          },
-          tooltip: {
-            mode: 'index',
-            intersect: false
-          }
+          legend: { position: 'top', labels: { color: '#e0e0e0' } },
+          tooltip: { mode: 'index', intersect: false }
         },
         scales: {
-          x: {
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            ticks: { color: '#aaa', maxRotation: 45, minRotation: 45 }
+          x: { 
+            grid: { color: 'rgba(255, 255, 255, 0.05)' }, 
+            ticks: { color: '#aaa', maxRotation: 45, minRotation: 45 } 
           },
-          y: {
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            ticks: { color: '#aaa', beginAtZero: true, stepSize: 1 }
+          y: { 
+            grid: { color: 'rgba(255, 255, 255, 0.05)' }, 
+            ticks: { color: '#aaa', beginAtZero: true, stepSize: 1 } 
           }
         }
       }
