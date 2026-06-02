@@ -9,6 +9,88 @@
 <link rel="apple-touch-icon" href="server-icon.png">
 <link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* 现代化 UI 覆盖与补充样式 */
+body {
+  background-color: #f4f6f9;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+section {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px auto;
+  max-width: 1000px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.1);
+}
+
+/* 头部 Overlay 现代化 */
+.hero .overlay {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  border-radius: 20px;
+  padding: 30px;
+  margin: 20px;
+  display: inline-block;
+}
+
+/* 状态与控制元素现代化 */
+.status {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin-top: 15px;
+  display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 按钮及复制控制现代化 */
+button, .btn, .copy-btn {
+  border-radius: 20px !important;
+  padding: 8px 16px;
+  border: none;
+  background-color: #4f46e5;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover, .btn:hover, .copy-btn:hover {
+  background-color: #4338ca;
+  border-radius: 14px !important;
+}
+
+/* 步骤与模组卡片圆角精细化 */
+.guide-step, .mod-category, .join-info {
+  background: rgba(248, 250, 252, 0.9);
+  border-radius: 12px !important;
+  padding: 16px;
+  margin-top: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.gallery img {
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+
+.gallery img:hover {
+  transform: scale(1.03);
+}
+</style>
 </head>
 
 <body>
@@ -17,7 +99,7 @@
 <div class="overlay">
 <h1>K2Cr2O7 Server</h1>
 <p class="subtitle">用重铬酸钾的能量，点燃你的工业灵感</p>
-<p style="font-size:12px;opacity:0.6;margin-top:10px;">更新时间：<span id="updateTime">{{UPDATE_TIME}}</span> | 节点：{{ONLINE_NODES}}/{{TOTAL_NODES}} 在线</p>
+<p style="font-size:12px;opacity:0.8;margin-top:10px;">更新时间：<span id="updateTime">{{UPDATE_TIME}}</span> | 节点：{{ONLINE_NODES}}/{{TOTAL_NODES}} 在线</p>
 
 <div class="status">
 状态：<span id="serverStatus" class="{{SERVER_STATUS_CLASS}}">{{SERVER_STATUS}}</span>
