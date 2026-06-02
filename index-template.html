@@ -666,46 +666,48 @@ document.addEventListener('DOMContentLoaded', setupAvatarFallback);
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   try {
-    // 1. 获取访客本地时区并显示
-    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const badgeEl = document.getElementById("tzBadge");
-    if (badgeEl) badgeEl.innerText = "当前本地时区: " + userTimezone;
-
-    // 2. 获取 Chart.js 实例
+    // 1. 尝试动态修改页面已有的 Chart 实例配置
     const charts = Object.values(Chart.instances);
     if (charts && charts.length > 0) {
-      const activeChart = charts[0];
-      const originalLabels = activeChart.data.labels;
-
-      // 3. 将后端传来的时间戳，直接转换为访客本地的 "月-日 时:分"
-      const convertedLabels = originalLabels.map(label => {
-        const timestamp = Number(label);
-        // 如果原本不是数字（防万一），保持原样
-        if (isNaN(timestamp)) return label; 
-
-        const localDate = new Date(timestamp);
-        const month = String(localDate.getMonth() + 1).padStart(2, '0');
-        const day = String(localDate.getDate()).padStart(2, '0');
-        const hours = String(localDate.getHours()).padStart(2, '0');
-        const minutes = String(localDate.getMinutes()).padStart(2, '0');
-
-        return `${month}-${day} ${hours}:${minutes}`;
+      charts.forEach(activeChart => {
+        
+        // 核心：利用 Chart.js 的 ticks.callback，在绘制 X 轴文字时进行实时翻译
+        if (activeChart.options.scales && activeChart.options.scales.x) {
+          activeChart.options.scales.x.ticks = activeChart.options.scales.x.ticks || {};
+          
+          activeChart.options.scales.x.ticks.callback = function(val, index) {
+            // 从图表的原始 labels 数组中拿到那个大数字时间戳
+            const rawLabel = this.getLabelForValue(val);
+            const timestamp = Number(rawLabel);
+            
+            // 如果不是数字（比如你原先写死的一些文本），保持原样输出
+            if (isNaN(timestamp) || timestamp < 1000000000000) {
+              return rawLabel;
+            }
+            
+            // 优雅地在浏览器本地转换为访客所在时区的“月-日 时:分”
+            const localDate = new Date(timestamp);
+            const month = String(localDate.getMonth() + 1).padStart(2, '0');
+            const day = String(localDate.getDate()).padStart(2, '0');
+            const hours = String(localDate.getHours()).padStart(2, '0');
+            const minutes = String(localDate.getMinutes()).padStart(2, '0');
+            
+            return `${month}-${day} ${hours}:${minutes}`;
+          };
+          
+          // 配置好回调后，通知图表重新渲染
+          activeChart.update();
+        }
       });
-
-      // 4. 写回图表并刷新
-      activeChart.data.labels = convertedLabels;
-      activeChart.update();
     }
 
-    // 5. 联动转换下方列表时间轴
+    // 2. 联动转换下方列表时间轴（防止列表里出现时间戳或错误时间）
     const timelineItems = document.querySelectorAll("#timeline li");
     timelineItems.forEach(item => {
-      // 匹配后端写入的 ISO 或北京时间字符串，将其转为访客本地时间
-      const match = item.innerHTML.match(/(\d{4}-\d{2}-\d{2})\s+(\d{2}):(\d{2})/);
-      if (match) {
-        // 创建一个临时的待解析时间字符串（这里假设后端生成的日志是北京时间 UTC+8）
-        const serverTimeStr = `${match[1]}T${match[2]}:${match[3]}:00+08:00`;
-        const localDate = new Date(serverTimeStr);
+      // 如果后端在列表里塞的是类似 1748851500000 这样的纯数字
+      const numMatch = item.innerHTML.match(/\b(17\d{11})\b/);
+      if (numMatch) {
+        const localDate = new Date(parseInt(numMatch[1], 10));
         if (!isNaN(localDate.getTime())) {
           const year = localDate.getFullYear();
           const month = String(localDate.getMonth() + 1).padStart(2, '0');
@@ -714,13 +716,13 @@ document.addEventListener("DOMContentLoaded", function() {
           const minutes = String(localDate.getMinutes()).padStart(2, '0');
           
           const newTimeStr = `${year}-${month}-${day} ${hours}:${minutes}`;
-          item.innerHTML = item.innerHTML.replace(/\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}/, newTimeStr);
+          item.innerHTML = item.innerHTML.replace(numMatch[1], newTimeStr);
         }
       }
     });
 
   } catch (e) {
-    console.error("本地时区转换失败: ", e);
+    console.error("时区转换脚本执行失败: ", e);
   }
 });
 </script>
