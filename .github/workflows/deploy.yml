@@ -9,7 +9,7 @@ on:
   schedule:
     # 每5分钟运行一次（UTC时间）
     # 注意：GitHub Actions 定时任务可能有延迟（3-10分钟）
-    - cron: '*/15 * * * *'
+    - cron: '*/10 * * * *'
   workflow_dispatch:
 
 permissions:
