@@ -666,75 +666,63 @@ document.addEventListener('DOMContentLoaded', setupAvatarFallback);
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   try {
-    // 1. 识别访客本地系统时区
+    // 1. 获取访客本地时区并显示
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const badgeEl = document.getElementById("tzBadge");
-    if (badgeEl) badgeEl.innerText = "当前时区: " + userTimezone;
+    if (badgeEl) badgeEl.innerText = "当前本地时区: " + userTimezone;
 
-    // 2. 计算时区偏差小时数（假设服务器/后端脚本输出的时间默认是北京时间 UTC+8）
-    // 如果你的服务器日志时间其实是 UTC，请把这里的 8 改成 0
-    const SERVER_TIMEZONE_OFFSET = 8; 
-    const localOffsetHours = -new Date().getTimezoneOffset() / 60;
-    const hourDifference = localOffsetHours - SERVER_TIMEZONE_OFFSET;
-
-    // 如果时区正好完全一样，则不需要任何转换，直接退出
-    if (hourDifference === 0) return;
-
-    // 3. 拦截 Chart.js 实例并转换
+    // 2. 获取 Chart.js 实例
     const charts = Object.values(Chart.instances);
     if (charts && charts.length > 0) {
       const activeChart = charts[0];
       const originalLabels = activeChart.data.labels;
 
+      // 3. 将后端传来的时间戳，直接转换为访客本地的 "月-日 时:分"
       const convertedLabels = originalLabels.map(label => {
-        // 利用正则表达式安全抓取原本的 小时 和 分钟 (比如从 "15:30" 或 "05-24 15:30" 中捕获)
-        const timeMatch = label.match(/(\d{1,2}):(\d{2})/);
-        if (!timeMatch) return label;
+        const timestamp = Number(label);
+        // 如果原本不是数字（防万一），保持原样
+        if (isNaN(timestamp)) return label; 
 
-        let hours = parseInt(timeMatch[1], 10);
-        const minutes = timeMatch[2];
+        const localDate = new Date(timestamp);
+        const month = String(localDate.getMonth() + 1).padStart(2, '0');
+        const day = String(localDate.getDate()).padStart(2, '0');
+        const hours = String(localDate.getHours()).padStart(2, '0');
+        const minutes = String(localDate.getMinutes()).padStart(2, '0');
 
-        // 核心：直接加减时区差值，并用 24 小时取模防止溢出
-        hours = (hours + hourDifference) % 24;
-        if (hours < 0) hours += 24;
-
-        const formattedHours = String(Math.floor(hours)).padStart(2, '0');
-        
-        // 如果原本包含日期（有减号），保留日期结构；否则只输出时间
-        if (label.includes('-')) {
-          return label.replace(/\d{1,2}:\d{2}/, formattedHours + ':' + minutes);
-        }
-        return formattedHours + ':' + minutes;
+        return `${month}-${day} ${hours}:${minutes}`;
       });
 
+      // 4. 写回图表并刷新
       activeChart.data.labels = convertedLabels;
       activeChart.update();
     }
 
-    // 4. 联动转换下方列表时间轴（防止列表里出现服务器时间误导玩家）
+    // 5. 联动转换下方列表时间轴
     const timelineItems = document.querySelectorAll("#timeline li");
     timelineItems.forEach(item => {
-      const match = item.innerHTML.match(/(\d{4}-\d{2}-\d{2}\s+)(\d{2}):(\d{2})/);
+      // 匹配后端写入的 ISO 或北京时间字符串，将其转为访客本地时间
+      const match = item.innerHTML.match(/(\d{4}-\d{2}-\d{2})\s+(\d{2}):(\d{2})/);
       if (match) {
-        const datePart = match[1];
-        let hours = parseInt(match[2], 10);
-        const minutes = match[3];
-
-        hours = (hours + hourDifference) % 24;
-        if (hours < 0) hours += 24;
-        const formattedHours = String(Math.floor(hours)).padStart(2, '0');
-
-        const originalFullTime = match[0];
-        // 简单替换小时，完美避开 Date 无法解析的坑
-        item.innerHTML = item.innerHTML.replace(originalFullTime, datePart + formattedHours + ':' + minutes);
+        // 创建一个临时的待解析时间字符串（这里假设后端生成的日志是北京时间 UTC+8）
+        const serverTimeStr = `${match[1]}T${match[2]}:${match[3]}:00+08:00`;
+        const localDate = new Date(serverTimeStr);
+        if (!isNaN(localDate.getTime())) {
+          const year = localDate.getFullYear();
+          const month = String(localDate.getMonth() + 1).padStart(2, '0');
+          const day = String(localDate.getDate()).padStart(2, '0');
+          const hours = String(localDate.getHours()).padStart(2, '0');
+          const minutes = String(localDate.getMinutes()).padStart(2, '0');
+          
+          const newTimeStr = `${year}-${month}-${day} ${hours}:${minutes}`;
+          item.innerHTML = item.innerHTML.replace(/\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}/, newTimeStr);
+        }
       }
     });
 
   } catch (e) {
-    console.error("安全时区转换执行失败: ", e);
+    console.error("本地时区转换失败: ", e);
   }
 });
 </script>
-
 </body>
 </html>
