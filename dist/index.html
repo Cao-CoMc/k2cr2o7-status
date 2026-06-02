@@ -222,6 +222,18 @@ canvas#chart {
   border-radius: 12px;
   padding: 10px;
 }
+
+/* 显示当前用户的时区提示 */
+.timezone-badge {
+  font-size: 12px;
+  background: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+  display: inline-block;
+  vertical-align: middle;
+}
 </style>
 </head>
 
@@ -231,7 +243,7 @@ canvas#chart {
 <div class="overlay">
 <h1>K2Cr2O7 Server</h1>
 <p class="subtitle">用重铬酸钾的能量，点燃你的工业灵感</p>
-<p style="font-size:12px;opacity:0.8;margin-top:10px;">更新时间：<span id="updateTime">2026/6/2 07:44:27</span> | 节点：3/3 在线</p>
+<p style="font-size:12px;opacity:0.8;margin-top:10px;">更新时间：<span id="updateTime">2026/6/2 07:51:24</span> | 节点：3/3 在线</p>
 
 <div class="status">
 状态：<span id="serverStatus" class="online">🟢 在线</span>
@@ -285,7 +297,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
   <div class="server-node online" data-node-id="shandong">
     <div class="node-header">
       <span class="node-region">📍 山东节点</span>
-      <span class="node-status online">🟢 在线 (267ms)</span>
+      <span class="node-status online">🟢 在线 (287ms)</span>
     </div>
     <div class="node-address">frp-ten.com:57232</div>
     <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">在线：0/20 人</div>
@@ -294,7 +306,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
   <div class="server-node online" data-node-id="jiangsu">
     <div class="node-header">
       <span class="node-region">📍 江苏节点</span>
-      <span class="node-status online">🟢 在线 (246ms)</span>
+      <span class="node-status online">🟢 在线 (3306ms)</span>
     </div>
     <div class="node-address">frp-web.com:40319</div>
     <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">在线：0/20 人</div>
@@ -303,7 +315,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
   <div class="server-node online" data-node-id="hubei">
     <div class="node-header">
       <span class="node-region">📍 湖北节点</span>
-      <span class="node-status online">🟢 在线 (246ms)</span>
+      <span class="node-status online">🟢 在线 (286ms)</span>
     </div>
     <div class="node-address">frp-tag.com:19158</div>
     <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">在线：0/20 人</div>
@@ -411,13 +423,14 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 </section>
 
 <section>
-<h2>📊 在线人数统计</h2>
+<h2>📊 在线人数统计<span id="tzBadge" class="timezone-badge">正在识别时区...</span></h2>
 <canvas id="chart"></canvas>
 </section>
 
 <section>
 <h2>📈 在线人数时间轴</h2>
 <ul id="timeline">
+  <li><span class="time">07:51</span><span class="count">0 玩家</span></li>
   <li><span class="time">07:44</span><span class="count">0 玩家</span></li>
   <li><span class="time">07:41</span><span class="count">0 玩家</span></li>
   <li><span class="time">07:35</span><span class="count">0 玩家</span></li>
@@ -447,7 +460,6 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
   <li><span class="time">19:39</span><span class="count">1 玩家</span></li>
   <li><span class="time">18:01</span><span class="count">1 玩家</span></li>
   <li><span class="time">16:58</span><span class="count">1 玩家</span></li>
-  <li><span class="time">15:45</span><span class="count">1 玩家</span></li>
 </ul>
 </section>
 
@@ -473,7 +485,6 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 <section>
 <h2>🧩 完整模组列表</h2>
 <div class="modlist-container">
-
 <div class="mod-category">
 <h4 class="category-title">🏠 建筑</h4>
 <ul class="mod-list">
@@ -636,7 +647,6 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 <li class="mod-item"><a href="https://www.mcmod.cn/class/8235.html" target="_blank" rel="noopener noreferrer"><span class="mod-name">Botarium</span><span class="mod-link">查看 →</span></a></li>
 </ul>
 </div>
-
 </div>
 </section>
 
@@ -653,7 +663,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 <p>
 <b>整合包官方下载：</b><br>
 <a href="https://github.com/sankuchuari/K2Cr2O7" target="_blank" rel="noopener noreferrer">GitHub 仓库 (源码与发布)</a><br>
-<a href="https://share.weiyun.com/ucLbeRsA" target="_blank" rel="noopener noreferrer">腾讯微云分流下载</a>
+<a href="https://share.weiyun.com/q302pTyj" target="_blank" rel="noopener noreferrer">腾讯微云分流下载</a>
 </p>
 <p class="private-notice">
 请加入 <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=jOWmrU_d2oTo7H7BpDBj2Y6ZDiRF_idp&authKey=yP5T8Au6SePKTUYW7Brqs6ZE3i%2BSGgQSNDkWs0T248hpWu7g3T71uWdAx6ooN9Eh&noverify=0&group_code=115987290" target="_blank" rel="noopener noreferrer">QQ 群 115987290</a> 交流和获取群内专属更新。
@@ -663,7 +673,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 
 <footer>
 <p>K2Cr2O7 Server Pack Powered by sankuchuari & luobo0x00 © 2026</p>
-<p style="font-size:12px;opacity:0.4">自动构建于 2026/6/2 07:44:27</p>
+<p style="font-size:12px;opacity:0.4">自动构建于 2026/6/2 07:51:24</p>
 </footer>
 
 <script>
@@ -705,9 +715,10 @@ function setupAvatarFallback() {
 
 document.addEventListener('DOMContentLoaded', setupAvatarFallback);
 </script>
+
 <script>
 (function() {
-  const labels = ["15:45","16:58","18:01","19:39","20:40","21:38","22:39","23:43","02:00","07:20","13:08","18:49","21:56","23:25","01:43","06:21","06:43","06:52","06:53","06:59","07:05","07:12","07:17","07:25","07:26","07:30","07:35","07:35","07:41","07:44"]; const data = [1,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  const labels = ["16:58","18:01","19:39","20:40","21:38","22:39","23:43","02:00","07:20","13:08","18:49","21:56","23:25","01:43","06:21","06:43","06:52","06:53","06:59","07:05","07:12","07:17","07:25","07:26","07:30","07:35","07:35","07:41","07:44","07:51"]; const data = [1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   if (labels.length === 0) return;
   new Chart(document.getElementById('chart').getContext('2d'), {
     type: 'line',
@@ -715,6 +726,67 @@ document.addEventListener('DOMContentLoaded', setupAvatarFallback);
     options: { responsive: true, plugins: { legend: { display: true, labels: { color: '#e0e0e0' } } }, scales: { y: { beginAtZero: true, ticks: { color: '#a0b0c0' }, grid: { color: 'rgba(255,255,255,0.1)' } }, x: { ticks: { color: '#a0b0c0' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
   });
 })();
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  try {
+    // 1. 获取访客本地系统时区
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const badgeEl = document.getElementById("tzBadge");
+    if (badgeEl) badgeEl.innerText = "当前时区: " + userTimezone;
+
+    // 2. 找到由 {{CHART_SCRIPT}} 创建的全局 Chart.js 图表实例
+    // Chart.js v4中实例会储存在 Chart.instances 中
+    const charts = Object.values(Chart.instances);
+    if (charts && charts.length > 0) {
+      const activeChart = charts[0];
+      const originalLabels = activeChart.data.labels;
+
+      // 3. 将图表原始的横轴坐标时间（假定原本是北京时间/服务器时间）转为玩家本地系统时间
+      const convertedLabels = originalLabels.map(label => {
+        // 判断格式，尝试将其转化为可解析的日期。如果只有 "05-24 15:30" 补上年份以准确解析
+        let parseableStr = label;
+        if (label.includes('-') && !label.startsWith('20')) {
+          parseableStr = new Date().getFullYear() + '-' + label;
+        }
+        
+        const date = new Date(parseableStr);
+        if (isNaN(date.getTime())) return label; // 解析失败则保留原样
+
+        // 转化为访客本机的具体“小时:分钟”或“月-日 时:分”
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+      });
+
+      // 4. 更新图表并重绘
+      activeChart.data.labels = convertedLabels;
+      activeChart.update();
+    }
+
+    // 5. 同时顺手转换下方“📈 在线人数时间轴”列表中的静态服务器时间
+    const timelineItems = document.querySelectorAll("#timeline li");
+    timelineItems.forEach(item => {
+      // 提取原始时间文本（例如：2026-05-24 15:30）
+      const match = item.innerHTML.match(/(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2})/);
+      if (match) {
+        const serverTimeStr = match[1];
+        const localDate = new Date(serverTimeStr.replace(/-/g, "/")); // 兼容写法
+        if (!isNaN(localDate.getTime())) {
+          const formattedLocal = localDate.getFullYear() + '-' + 
+            String(localDate.getMonth() + 1).padStart(2, '0') + '-' + 
+            String(localDate.getDate()).padStart(2, '0') + ' ' + 
+            String(localDate.getHours()).padStart(2, '0') + ':' + 
+            String(localDate.getMinutes()).padStart(2, '0');
+          
+          item.innerHTML = item.innerHTML.replace(serverTimeStr, formattedLocal);
+        }
+      }
+    });
+
+  } catch (e) {
+    console.error("时区转换脚本执行失败: ", e);
+  }
+});
 </script>
 
 </body>
