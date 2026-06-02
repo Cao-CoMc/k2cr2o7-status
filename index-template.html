@@ -10,81 +10,98 @@
 <link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-/* 现代化 UI 覆盖与补充样式 */
+/* 适配暗黑模式与底部背景图的现代化 UI 覆盖样式 */
 body {
-  background-color: #f4f6f9;
-  color: #333;
+  background-color: #0f1115;
+  background-image: 
+    linear-gradient(to bottom, #0f1115 0%, #161b22 60%, rgba(22, 27, 34, 0.85) 85%, #161b22 100%),
+    url('backup.png');
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: 100% auto;
+  background-attachment: scroll;
+  color: #e2e8f0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 section {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(22, 27, 34, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 16px;
   padding: 24px;
   margin: 20px auto;
   max-width: 1000px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 section:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.1);
+  box-shadow: 0 16px 50px 0 rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
 }
 
-/* 头部 Overlay 现代化 */
+h2 {
+  color: #f8fafc;
+  border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+  padding-bottom: 8px;
+}
+
+/* 头部 Overlay 现代化暗色处理 */
 .hero .overlay {
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
+  background: rgba(15, 17, 21, 0.6);
+  backdrop-filter: blur(6px);
   border-radius: 20px;
   padding: 30px;
   margin: 20px;
   display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* 状态与控制元素现代化 */
+/* 状态与控制元素暗色化 */
 .status {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(8px);
   border-radius: 12px;
   padding: 12px 20px;
   margin-top: 15px;
   display: inline-block;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* 按钮及复制控制现代化 */
+/* 按钮及复制控制暗色霓虹风格 */
 button, .btn, .copy-btn {
   border-radius: 20px !important;
   padding: 8px 16px;
   border: none;
-  background-color: #4f46e5;
+  background-color: #6366f1;
   color: white;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
 }
 
 button:hover, .btn:hover, .copy-btn:hover {
-  background-color: #4338ca;
+  background-color: #4f46e5;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
   border-radius: 14px !important;
 }
 
-/* 步骤与模组卡片圆角精细化 */
+/* 内置信息卡片暗色微光 */
 .guide-step, .mod-category, .join-info, .developer-card {
-  background: rgba(248, 250, 252, 0.9);
+  background: rgba(15, 23, 42, 0.6);
   border-radius: 12px !important;
   padding: 16px;
   margin-top: 15px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .developer-card {
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(248, 250, 252, 0.9) 100%);
-  border-left: 4px solid #4f46e5;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%);
+  border-left: 4px solid #6366f1;
 }
 
 .developer-list {
@@ -105,24 +122,28 @@ button:hover, .btn:hover, .copy-btn:hover {
 .developer-links a {
   margin-right: 12px;
   text-decoration: none;
-  color: #4f46e5;
+  color: #818cf8;
   font-size: 13px;
+  font-weight: 500;
 }
 
 .developer-links a:hover {
+  color: #a5b4fc;
   text-decoration: underline;
 }
 
 .gallery img {
   border-radius: 12px;
-  transition: transform 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .gallery img:hover {
   transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
 }
 
-/* 模组列表网格布局 */
+/* 模组列表网格布局暗色卡片 */
 .modlist-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -143,18 +164,33 @@ button:hover, .btn:hover, .copy-btn:hover {
   justify-content: space-between;
   align-items: center;
   text-decoration: none;
-  color: #334155;
+  color: #cbd5e1;
   padding: 6px 8px;
   border-radius: 6px;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 .mod-item a:hover {
-  background: rgba(79, 70, 229, 0.08);
-  color: #4f46e5;
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
 }
 .mod-link {
   font-size: 12px;
-  color: #94a3b8;
+  color: #64748b;
+}
+
+a {
+  color: #818cf8;
+  text-decoration: none;
+}
+a:hover {
+  color: #a5b4fc;
+}
+
+/* 针对暗色图表的微调 */
+canvas#chart {
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 12px;
+  padding: 10px;
 }
 </style>
 </head>
@@ -207,13 +243,13 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
   </li>
 </ul>
 <p style="margin-top: 12px;"><b>项目开源地址：</b> <a href="https://github.com/sankuchuari/K2Cr2O7" target="_blank" rel="noopener noreferrer">GitHub - sankuchuari/K2Cr2O7</a></p>
-<p style="font-size: 13px; color: #64748b; margin-top: 5px;">💡 感谢所有参与测试与提出改进建议的社区玩家！</p>
+<p style="font-size: 13px; color: #94a3b8; margin-top: 5px;">💡 感谢所有参与测试与提出改进建议的社区玩家！</p>
 </div>
 </section>
 
 <section>
 <h2>🌐 多地区服务器节点</h2>
-<p class="server-intro">我们提供多个地区节点，请选择延迟最低的服务器加入：</p>
+<p class="server-intro">我们 offer 多个地区节点，请选择延迟最低的服务器加入：</p>
 
 <div class="server-nodes">
 {{NODES_HTML}}
@@ -268,7 +304,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 <ul>
 <li><a href="https://www.mcmod.cn/class/19600.html" target="_blank">推进工程</a>：添加火车与运输系统</li>
 <li><a href="https://www.mcmod.cn/class/9151.html" target="_blank">中央厨房</a>：与农业结合的自动烹饪系统</li>
-<li><a href="https://www.mcmod.cn/class/15499.html" target="_blank">驱动工艺</a>：全新传动机制支持</li>
+<li><a href="https://www.mcmod.cn/class/15499.html" target="_blank">驱动工艺</a>：全新传动机制 support</li>
 <li><a href="https://www.mcmod.cn/class/1681.html" target="_blank">CC: Tweaked</a>：Lua 编程控制流程</li>
 </ul>
 </li>
@@ -454,7 +490,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 <li class="mod-item"><a href="https://www.mcmod.cn/class/8487.html" target="_blank" rel="noopener noreferrer"><span class="mod-name">CC：C Bridge</span><span class="mod-link">查看 →</span></a></li>
 <li class="mod-item"><a href="https://www.mcmod.cn/class/13550.html" target="_blank" rel="noopener noreferrer"><span class="mod-name">Clockwork</span><span class="mod-link">查看 →</span></a></li>
 <li class="mod-item"><a href="https://www.mcmod.cn/class/16698.html" target="_blank" rel="noopener noreferrer"><span class="mod-name">ClockworkAdditions</span><span class="mod-link">查看 →</span></a></li>
-<li class="mod-item"><a href="https://www.mcmod.cn/class/2021.html" target="_blank" rel="noopener noreferrer"><span class="mod-name">机械动力</span><span class="mod-link">查看 →</span></a></li>
+<li class="mod-item"><a href="https://www.mcmod.cn/class/2021.html" target="_blank" rel="noopener noreferrer"><span class="mod-name">机械动力</span><span class="mod-name">查看 →</span></a></li>
 <li class="mod-item"><a href="https://www.mcmod.cn/class/19837.html" target="_blank" rel="noopener noreferrer"><span class="mod-name">机械动力：别碰</span><span class="mod-link">查看 →</span></a></li>
 <li class="mod-item"><a href="https://www.mcmod.cn/class/17880.html" target="_blank" rel="noopener noreferrer"><span class="mod-name">机械动力：雷达</span><span class="mod-link">查看 →</span></a></li>
 <li class="mod-item"><a href="https://www.mcmod.cn/class/5189.html" target="_blank" rel="noopener noreferrer"><span class="mod-name">机械动力：装饰</span><span class="mod-link">查看 →</span></a></li>
@@ -533,7 +569,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 <p>
 <b>整合包官方下载：</b><br>
 <a href="https://github.com/sankuchuari/K2Cr2O7" target="_blank" rel="noopener noreferrer">GitHub 仓库 (源码与发布)</a><br>
-<a href="https://share.weiyun.com/ucLbeRsA" target="_blank" rel="noopener noreferrer">腾讯微云分流下载</a>
+<a href="https://share.weiyun.com/q302pTyj" target="_blank" rel="noopener noreferrer">腾讯微云分流下载</a>
 </p>
 <p class="private-notice">
 请加入 <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=jOWmrU_d2oTo7H7BpDBj2Y6ZDiRF_idp&authKey=yP5T8Au6SePKTUYW7Brqs6ZE3i%2BSGgQSNDkWs0T248hpWu7g3T71uWdAx6ooN9Eh&noverify=0&group_code=115987290" target="_blank" rel="noopener noreferrer">QQ 群 115987290</a> 交流和获取群内专属更新。
@@ -543,7 +579,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 
 <footer>
 <p>K2Cr2O7 Server Pack Powered by sankuchuari & luobo0x00 © 2026</p>
-<p style="font-size:12px;opacity:0.5">自动构建于 {{BUILD_TIME}}</p>
+<p style="font-size:12px;opacity:0.4">自动构建于 {{BUILD_TIME}}</p>
 </footer>
 
 <script>
@@ -577,7 +613,7 @@ function setupAvatarFallback() {
         this.src = 'https://cravatar.eu/helmavatar/' + username + '/32.png';
       }
       this.onerror = function() {
-        this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect fill="%23ccc" width="32" height="32"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="16">?</text></svg>';
+        this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect fill="%23444" width="32" height="32"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23fff" font-size="16">?</text></svg>';
       };
     };
   });
