@@ -21,7 +21,7 @@ body {
   background-size: cover;
   background-attachment: fixed; /* 核心：图在背后固定不动 */
   color: #e2e8f0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif;
 }
 
 /* 统一头部：干掉原本不透明的深色渐变块 */
@@ -666,60 +666,72 @@ document.addEventListener('DOMContentLoaded', setupAvatarFallback);
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   try {
-    // 1. 获取访客本地系统时区
+    // 1. 识别访客本地系统时区
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const badgeEl = document.getElementById("tzBadge");
     if (badgeEl) badgeEl.innerText = "当前时区: " + userTimezone;
 
-    // 2. 找到由 {{CHART_SCRIPT}} 创建的全局 Chart.js 图表实例
-    // Chart.js v4中实例会储存在 Chart.instances 中
+    // 2. 计算时区偏差小时数（假设服务器/后端脚本输出的时间默认是北京时间 UTC+8）
+    // 如果你的服务器日志时间其实是 UTC，请把这里的 8 改成 0
+    const SERVER_TIMEZONE_OFFSET = 8; 
+    const localOffsetHours = -new Date().getTimezoneOffset() / 60;
+    const hourDifference = localOffsetHours - SERVER_TIMEZONE_OFFSET;
+
+    // 如果时区正好完全一样，则不需要任何转换，直接退出
+    if (hourDifference === 0) return;
+
+    // 3. 拦截 Chart.js 实例并转换
     const charts = Object.values(Chart.instances);
     if (charts && charts.length > 0) {
       const activeChart = charts[0];
       const originalLabels = activeChart.data.labels;
 
-      // 3. 将图表原始的横轴坐标时间（假定原本是北京时间/服务器时间）转为玩家本地系统时间
       const convertedLabels = originalLabels.map(label => {
-        // 判断格式，尝试将其转化为可解析的日期。如果只有 "05-24 15:30" 补上年份以准确解析
-        let parseableStr = label;
-        if (label.includes('-') && !label.startsWith('20')) {
-          parseableStr = new Date().getFullYear() + '-' + label;
-        }
-        
-        const date = new Date(parseableStr);
-        if (isNaN(date.getTime())) return label; // 解析失败则保留原样
+        // 利用正则表达式安全抓取原本的 小时 和 分钟 (比如从 "15:30" 或 "05-24 15:30" 中捕获)
+        const timeMatch = label.match(/(\d{1,2}):(\d{2})/);
+        if (!timeMatch) return label;
 
-        // 转化为访客本机的具体“小时:分钟”或“月-日 时:分”
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        let hours = parseInt(timeMatch[1], 10);
+        const minutes = timeMatch[2];
+
+        // 核心：直接加减时区差值，并用 24 小时取模防止溢出
+        hours = (hours + hourDifference) % 24;
+        if (hours < 0) hours += 24;
+
+        const formattedHours = String(Math.floor(hours)).padStart(2, '0');
+        
+        // 如果原本包含日期（有减号），保留日期结构；否则只输出时间
+        if (label.includes('-')) {
+          return label.replace(/\d{1,2}:\d{2}/, formattedHours + ':' + minutes);
+        }
+        return formattedHours + ':' + minutes;
       });
 
-      // 4. 更新图表并重绘
       activeChart.data.labels = convertedLabels;
       activeChart.update();
     }
 
-    // 5. 同时顺手转换下方“📈 在线人数时间轴”列表中的静态服务器时间
+    // 4. 联动转换下方列表时间轴（防止列表里出现服务器时间误导玩家）
     const timelineItems = document.querySelectorAll("#timeline li");
     timelineItems.forEach(item => {
-      // 提取原始时间文本（例如：2026-05-24 15:30）
-      const match = item.innerHTML.match(/(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2})/);
+      const match = item.innerHTML.match(/(\d{4}-\d{2}-\d{2}\s+)(\d{2}):(\d{2})/);
       if (match) {
-        const serverTimeStr = match[1];
-        const localDate = new Date(serverTimeStr.replace(/-/g, "/")); // 兼容写法
-        if (!isNaN(localDate.getTime())) {
-          const formattedLocal = localDate.getFullYear() + '-' + 
-            String(localDate.getMonth() + 1).padStart(2, '0') + '-' + 
-            String(localDate.getDate()).padStart(2, '0') + ' ' + 
-            String(localDate.getHours()).padStart(2, '0') + ':' + 
-            String(localDate.getMinutes()).padStart(2, '0');
-          
-          item.innerHTML = item.innerHTML.replace(serverTimeStr, formattedLocal);
-        }
+        const datePart = match[1];
+        let hours = parseInt(match[2], 10);
+        const minutes = match[3];
+
+        hours = (hours + hourDifference) % 24;
+        if (hours < 0) hours += 24;
+        const formattedHours = String(Math.floor(hours)).padStart(2, '0');
+
+        const originalFullTime = match[0];
+        // 简单替换小时，完美避开 Date 无法解析的坑
+        item.innerHTML = item.innerHTML.replace(originalFullTime, datePart + formattedHours + ':' + minutes);
       }
     });
 
   } catch (e) {
-    console.error("时区转换脚本执行失败: ", e);
+    console.error("安全时区转换执行失败: ", e);
   }
 });
 </script>
