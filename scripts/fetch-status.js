@@ -101,7 +101,7 @@ async function main() {
     }
 
     history[node.id].push({
-      time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+      time: new Date().getTime(), // 🔥 核心：改存纯数字时间戳，避免后端给时间定死时区
       players: status.players.online,
       timestamp: timestamp
     });
