@@ -10,24 +10,52 @@
 <link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-/* 适配暗黑模式与底部背景图的现代化 UI 覆盖样式 */
+/* 全局：背景图时刻在背后，大面积降低遮罩浓稠度 */
 body {
   background-color: #0f1115;
   background-image: 
-    linear-gradient(to bottom, #0f1115 0%, #161b22 60%, rgba(22, 27, 34, 0.85) 85%, #161b22 100%),
+    linear-gradient(to bottom, rgba(15, 17, 21, 0.3) 0%, rgba(22, 27, 34, 0.4) 50%, rgba(15, 17, 21, 0.5) 100%),
     url('backup.png');
   background-repeat: no-repeat;
-  background-position: bottom center;
-  background-size: 100% auto;
-  background-attachment: scroll;
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed; /* 核心：图在背后固定不动 */
   color: #e2e8f0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+/* 统一头部：干掉原本不透明的深色渐变块 */
+.hero {
+  background: transparent !important; /* 彻底透明，露出后面的大背景 */
+  height: auto !important;
+  padding: 60px 20px 20px 20px !important;
+}
+
+/* 头部的文字容器：和中间一样，采用高质感毛玻璃 */
+.hero .overlay {
+  background: rgba(22, 27, 34, 0.75) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+  padding: 30px;
+  margin: 0 auto;
+  max-width: 940px; /* 让宽度与 section 对齐 */
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* 去掉头部原本发光的伪元素 */
+.hero::before {
+  display: none !important;
+}
+
+/* 中间常规卡片 */
 section {
   background: rgba(22, 27, 34, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: 16px;
   padding: 24px;
   margin: 20px auto;
@@ -39,8 +67,22 @@ section {
 
 section:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 50px 0 rgba(99, 102, 241, 0.15);
+  box-shadow: 0 16px 50px 0 rgba(99, 102, 241, 0.2);
   border-color: rgba(99, 102, 241, 0.3);
+}
+
+/* 统一尾部：干掉原本底部的黑色块 */
+footer {
+  background: rgba(22, 27, 34, 0.75) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  margin: 40px auto 20px auto !important;
+  max-width: 1000px;
+  border-radius: 16px;
+  padding: 24px !important;
+  box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.5);
+  color: #94a3b8 !important;
 }
 
 h2 {
@@ -49,29 +91,18 @@ h2 {
   padding-bottom: 8px;
 }
 
-/* 头部 Overlay 现代化暗色处理 */
-.hero .overlay {
-  background: rgba(15, 17, 21, 0.6);
-  backdrop-filter: blur(6px);
-  border-radius: 20px;
-  padding: 30px;
-  margin: 20px;
-  display: inline-block;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* 状态与控制元素暗色化 */
+/* 状态与控制元素 */
 .status {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(8px);
   border-radius: 12px;
   padding: 12px 20px;
   margin-top: 15px;
   display: inline-block;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* 按钮及复制控制暗色霓虹风格 */
+/* 按钮及控制 */
 button, .btn, .copy-btn {
   border-radius: 20px !important;
   padding: 8px 16px;
@@ -81,26 +112,26 @@ button, .btn, .copy-btn {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
 }
 
 button:hover, .btn:hover, .copy-btn:hover {
   background-color: #4f46e5;
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
   border-radius: 14px !important;
 }
 
-/* 内置信息卡片暗色微光 */
+/* 内置信息子卡片 */
 .guide-step, .mod-category, .join-info, .developer-card {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(15, 23, 42, 0.4);
   border-radius: 12px !important;
   padding: 16px;
   margin-top: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .developer-card {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(15, 23, 42, 0.4) 100%);
   border-left: 4px solid #6366f1;
 }
 
@@ -134,16 +165,16 @@ button:hover, .btn:hover, .copy-btn:hover {
 
 .gallery img {
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .gallery img:hover {
   transform: scale(1.03);
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
 }
 
-/* 模组列表网格布局暗色卡片 */
+/* 模组列表网格布局 */
 .modlist-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -170,7 +201,7 @@ button:hover, .btn:hover, .copy-btn:hover {
   transition: background 0.2s, color 0.2s;
 }
 .mod-item a:hover {
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(99, 102, 241, 0.12);
   color: #818cf8;
 }
 .mod-link {
@@ -186,9 +217,8 @@ a:hover {
   color: #a5b4fc;
 }
 
-/* 针对暗色图表的微调 */
 canvas#chart {
-  background: rgba(15, 23, 42, 0.4);
+  background: rgba(15, 23, 42, 0.3);
   border-radius: 12px;
   padding: 10px;
 }
@@ -249,7 +279,7 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 
 <section>
 <h2>🌐 多地区服务器节点</h2>
-<p class="server-intro">我们 offer 多个地区节点，请选择延迟最低的服务器加入：</p>
+<p class="server-intro">我们提供多个地区节点，请选择延迟最低的服务器加入：</p>
 
 <div class="server-nodes">
 {{NODES_HTML}}
@@ -303,8 +333,8 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 <li>随后可引入以下进阶：
 <ul>
 <li><a href="https://www.mcmod.cn/class/19600.html" target="_blank">推进工程</a>：添加火车与运输系统</li>
-<li><a href="https://www.mcmod.cn/class/9151.html" target="_blank">中央厨房</a>：与农业结合的自动烹饪系统</li>
-<li><a href="https://www.mcmod.cn/class/15499.html" target="_blank">驱动工艺</a>：全新传动机制 support</li>
+<li><a href="https://www.mcmod.cn/class/9151.html" target="_blank">中央厨房</a>：与农业结合的自动烹饪 system</li>
+<li><a href="https://www.mcmod.cn/class/15499.html" target="_blank">驱动工艺</a>：全新传动机制支持</li>
 <li><a href="https://www.mcmod.cn/class/1681.html" target="_blank">CC: Tweaked</a>：Lua 编程控制流程</li>
 </ul>
 </li>
@@ -384,7 +414,6 @@ K2Cr2O7 是一个专注于 <b>流畅体验</b> 与 <b>功能性拓展</b> 的 Mi
 <img src="images/6.png" alt="服务器截图6" loading="lazy">
 </div>
 </section>
-
 
 <section>
 <h2>🧩 完整模组列表</h2>
