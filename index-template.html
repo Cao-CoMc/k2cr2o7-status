@@ -662,67 +662,37 @@ document.addEventListener('DOMContentLoaded', setupAvatarFallback);
 </script>
 
 {{CHART_SCRIPT}}
-
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   try {
-    // 1. 尝试动态修改页面已有的 Chart 实例配置
-    const charts = Object.values(Chart.instances);
-    if (charts && charts.length > 0) {
-      charts.forEach(activeChart => {
+    if (window.activeChartInstance) {
+      const chart = window.activeChartInstance;
+      if (chart.options.scales && chart.options.scales.x) {
+        chart.options.scales.x.ticks = chart.options.scales.x.ticks || {};
         
-        // 核心：利用 Chart.js 的 ticks.callback，在绘制 X 轴文字时进行实时翻译
-        if (activeChart.options.scales && activeChart.options.scales.x) {
-          activeChart.options.scales.x.ticks = activeChart.options.scales.x.ticks || {};
+        // 使用内置 callback 在绘制时刻安全将数字转为客户端时区
+        chart.options.scales.x.ticks.callback = function(val) {
+          const rawLabel = this.getLabelForValue(val);
+          const timestamp = Number(rawLabel);
+          if (isNaN(timestamp) || timestamp < 1000000000000) return rawLabel;
           
-          activeChart.options.scales.x.ticks.callback = function(val, index) {
-            // 从图表的原始 labels 数组中拿到那个大数字时间戳
-            const rawLabel = this.getLabelForValue(val);
-            const timestamp = Number(rawLabel);
-            
-            // 如果不是数字（比如你原先写死的一些文本），保持原样输出
-            if (isNaN(timestamp) || timestamp < 1000000000000) {
-              return rawLabel;
-            }
-            
-            // 优雅地在浏览器本地转换为访客所在时区的“月-日 时:分”
-            const localDate = new Date(timestamp);
-            const month = String(localDate.getMonth() + 1).padStart(2, '0');
-            const day = String(localDate.getDate()).padStart(2, '0');
-            const hours = String(localDate.getHours()).padStart(2, '0');
-            const minutes = String(localDate.getMinutes()).padStart(2, '0');
-            
-            return `${month}-${day} ${hours}:${minutes}`;
-          };
-          
-          // 配置好回调后，通知图表重新渲染
-          activeChart.update();
-        }
-      });
+          const d = new Date(timestamp);
+          return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+        };
+        chart.update('none');
+      }
     }
 
-    // 2. 联动转换下方列表时间轴（防止列表里出现时间戳或错误时间）
-    const timelineItems = document.querySelectorAll("#timeline li");
-    timelineItems.forEach(item => {
-      // 如果后端在列表里塞的是类似 1748851500000 这样的纯数字
-      const numMatch = item.innerHTML.match(/\b(17\d{11})\b/);
-      if (numMatch) {
-        const localDate = new Date(parseInt(numMatch[1], 10));
-        if (!isNaN(localDate.getTime())) {
-          const year = localDate.getFullYear();
-          const month = String(localDate.getMonth() + 1).padStart(2, '0');
-          const day = String(localDate.getDate()).padStart(2, '0');
-          const hours = String(localDate.getHours()).padStart(2, '0');
-          const minutes = String(localDate.getMinutes()).padStart(2, '0');
-          
-          const newTimeStr = `${year}-${month}-${day} ${hours}:${minutes}`;
-          item.innerHTML = item.innerHTML.replace(numMatch[1], newTimeStr);
-        }
+    // 格式化列表中的时间
+    document.querySelectorAll("#timeline li .time-label").forEach(el => {
+      const timestamp = Number(el.innerText.trim());
+      if (!isNaN(timestamp) && timestamp > 1000000000000) {
+        const d = new Date(timestamp);
+        el.innerText = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
       }
     });
-
-  } catch (e) {
-    console.error("时区转换脚本执行失败: ", e);
+  } catch (err) {
+    console.warn("Timezone formatter intercepted safe-mode: ", err);
   }
 });
 </script>
