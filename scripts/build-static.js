@@ -13,7 +13,7 @@ if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
 }
 
-// 下载文件函数
+// 下载文件函数（用于本地化 Chart.js 缓存防止 CDN 挂掉）
 function downloadFile(url, dest) {
   return new Promise((resolve, reject) => {
     if (fs.existsSync(dest)) {
@@ -42,155 +42,237 @@ function downloadFile(url, dest) {
   });
 }
 
-// 下载必要的资源到本地
-async function downloadAssets() {
-  const assetsDir = path.join(distDir, 'assets');
-  if (!fs.existsSync(assetsDir)) {
-    fs.mkdirSync(assetsDir, { recursive: true });
-  }
+// 🛡️ 核心：在后端统一将时间戳转为北京时间 (UTC+8) 的 "MM-DD HH:mm" 格式
+function formatToLocalTimezone(timestamp) {
+  if (!timestamp) return '';
+  const date = new Date(Number(timestamp));
+  if (isNaN(date.getTime())) return '';
 
-  try {
-    // 下载 Chart.js（使用 jsDelivr 的国内镜像或备用源）
-    await downloadFile(
-      'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
-      path.join(assetsDir, 'chart.min.js')
-    );
-  } catch (e) {
-    console.log('⚠️  Failed to download Chart.js:', e.message);
-    console.log('   Will use CDN fallback');
-  }
+  // 强制使用 Asia/Shanghai 时区，格式化为 "06-02 16:30"
+  const formatter = new Intl.DateTimeFormat('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+
+  const parts = formatter.formatToParts(date);
+  const map = new Map(parts.map(p => [p.type, p.value]));
+  
+  return `${map.get('month')}-${map.get('day')} ${map.get('hour')}:${map.get('minute')}`;
 }
 
-// 加载状态数据
-let statusData = { 
-  timestamp: new Date().toISOString(), 
-  generatedAt: new Date().toLocaleString('zh-CN'),
-  totalNodes: 0, onlineNodes: 0, totalPlayers: 0, nodes: [] 
-};
-
-try {
-  if (fs.existsSync(statusFile)) {
-    statusData = JSON.parse(fs.readFileSync(statusFile, 'utf8'));
-  }
-} catch (e) {
-  console.log('⚠️  Using default data');
-}
-
-// 读取模板
-let template = '';
-try {
-  template = fs.readFileSync(templateFile, 'utf8');
-} catch (e) {
-  console.error('❌ Cannot read template:', e.message);
-  process.exit(1);
-}
-
-// 生成动态内容（与之前相同）
+// 渲染节点 HTML
 function generateNodes(nodes) {
-  if (!nodes || nodes.length === 0) return '';
+  if (!nodes || nodes.length === 0) return '<p>暂无节点数据</p>';
   return nodes.map(node => {
     const statusClass = node.online ? 'online' : 'offline';
     const statusText = node.online ? '🟢 在线' : '🔴 离线';
-    const latencyText = node.latency ? `(${node.latency}ms)` : '';
-    return `  <div class="server-node ${statusClass}" data-node-id="${node.id}">
-    <div class="node-header">
-      <span class="node-region">📍 ${node.name}</span>
-      <span class="node-status ${statusClass}">${statusText} ${latencyText}</span>
-    </div>
-    <div class="node-address">${node.address}</div>
-    <div style="margin-top:10px;font-size:14px;color:#a0b0c0;">在线：${node.players.online}/${node.players.max} 人</div>
-    <button class="copy-btn" onclick="copyAddress('${node.address}', this)">📋 复制地址</button>
-  </div>`;
+    return `
+      <div class="node-card">
+        <div class="node-header">
+          <h3>${node.name}</h3>
+          <span class="node-status ${statusClass}">${statusText}</span>
+        </div>
+        <div class="node-body">
+          <p><strong>地址：</strong><code>${node.address}</code> <button class="btn-copy" onclick="copyAddress('${node.address}', this)">📋 复制地址</button></p>
+          ${node.online ? `
+            <p><strong>版本：</strong>${node.version || '未知'}</p>
+            <p><strong>延迟：</strong>${node.latency ? node.latency + 'ms' : '未知'}</p>
+            <p><strong>玩家：</strong><span class="highlight">${node.players.online}/${node.players.max}</span></p>
+          ` : `
+            <p class="error-text"><strong>错误原因：</strong>${node.error || '连接超时'}</p>
+          `}
+        </div>
+      </div>
+    `;
   }).join('\n');
 }
 
-function generateChartScript(nodes) {
-  const node = nodes.find(n => n.history && n.history.length > 0);
-  if (!node) return '';
-  const labels = JSON.stringify(node.history.map(i => i.time));
-  const data = JSON.stringify(node.history.map(i => i.players));
-
-  return `<script>
-(function() {
-  const labels = ${labels}; const data = ${data};
-  if (labels.length === 0) return;
-  new Chart(document.getElementById('chart').getContext('2d'), {
-    type: 'line',
-    data: { labels: labels, datasets: [{ label: '在线人数', data: data, borderColor: '#4da6ff', backgroundColor: 'rgba(77,166,255,0.1)', tension: 0.3, fill: true, pointRadius: 3, pointBackgroundColor: '#4da6ff' }] },
-    options: { responsive: true, plugins: { legend: { display: true, labels: { color: '#e0e0e0' } } }, scales: { y: { beginAtZero: true, ticks: { color: '#a0b0c0' }, grid: { color: 'rgba(255,255,255,0.1)' } }, x: { ticks: { color: '#a0b0c0' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
-  });
-})();
-</script>`;
-}
-
+// 渲染下方列表时间轴 HTML
 function generateTimeline(nodes) {
-  const node = nodes.find(n => n.history && n.history.length > 0);
-  if (!node) return '<li>暂无历史数据</li>';
-  return [...node.history].reverse().map(item => 
-    `  <li><span class="time">${item.time}</span><span class="count">${item.players} 玩家</span></li>`
-  ).join('\n');
+  if (!nodes || nodes.length === 0) return '';
+  // 取第一个有历史记录的节点的记录来做公共时间轴列表
+  const mainNode = nodes.find(n => n.history && n.history.length > 0);
+  if (!mainNode) return '<li class="no-data">暂无历史事件</li>';
+
+  // 倒序排列，让最新的事件显示在最上面
+  const displayHistory = [...mainNode.history].reverse();
+
+  return displayHistory.map(h => {
+    // 优先读取时间戳进行北京时间转换，如果没有则降级读取 time
+    const localTimeStr = h.timestamp ? formatToLocalTimezone(h.timestamp) : h.time;
+    return `
+      <li>
+        <span class="time">${localTimeStr}</span>
+        <span class="event">服务器状态检查完成</span>
+        <span class="count">全网在线: ${h.players} 人</span>
+      </li>
+    `;
+  }).join('\n');
 }
 
+// 渲染在线玩家头像
 function generatePlayers(nodes) {
-  const players = new Map();
-  nodes.forEach(n => {
-    if (n.online && n.players.sample) {
-      n.players.sample.forEach(p => players.set(p.name, p));
+  const allPlayers = [];
+  nodes.forEach(node => {
+    if (node.online && node.players.sample) {
+      node.players.sample.forEach(p => {
+        if (!allPlayers.some(existing => existing.id === p.id)) {
+          allPlayers.push(p);
+        }
+      });
     }
   });
-  if (players.size === 0) return '<li>暂无玩家在线</li>';
-  return Array.from(players.values()).map(p => 
-    `  <li><img src="https://mc-heads.net/avatar/${p.name}/32" alt="${p.name}" loading="lazy" onerror="this.src='https://cravatar.eu/helmavatar/${p.name}/32.png'; this.onerror=function(){this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect fill=%22%23ccc%22 width=%2232%22 height=%2232%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2216%22>?</text></svg>';}">${p.name}</li>`
-  ).join('\n');
+
+  if (allPlayers.length === 0) {
+    return '<p style="text-align:center; opacity:0.6; padding: 20px;">当前暂无在线玩家</p>';
+  }
+
+  return allPlayers.map(p => `
+    <div class="player-avatar" title="${p.name}">
+      <img src="https://mc-heads.net/avatar/${p.name}/32" alt="${p.name}">
+      <span>${p.name}</span>
+    </div>
+  `).join('\n');
 }
 
-// 主构建流程
-async function build() {
-  // 下载资源
-  await downloadAssets();
+// 🛡️ 核心：生成前端 Chart.js 的配置脚本
+function generateChartScript(nodes) {
+  if (!nodes || nodes.length === 0) return '';
 
-  // 替换模板
-  let html = template
-    .replace('{{SERVER_STATUS}}', statusData.onlineNodes > 0 ? '🟢 在线' : '🔴 离线')
-    .replace('{{SERVER_STATUS_CLASS}}', statusData.onlineNodes > 0 ? 'online' : 'offline')
+  // 提取公共 X 轴标签（采用北京时间转换后的安全字符串数组）
+  const firstNode = nodes.find(n => n.history && n.history.length > 0);
+  if (!firstNode) return 'console.log("No history data available for chart");';
+
+  // 将所有历史节点的时间戳转换为北京时间字符串数组
+  const labelsArray = firstNode.history.map(h => `"${formatToLocalTimezone(h.timestamp || h.time)}"`);
+  const labelsJson = `[${labelsArray.join(', ')}]`;
+
+  // 组装各个节点的 datasets 数据集
+  const datasets = nodes.map((node, index) => {
+    const colors = [
+      { border: '#4caf50', background: 'rgba(76, 175, 80, 0.1)' },  // 绿色系
+      { border: '#2196f3', background: 'rgba(33, 150, 243, 0.1)' }, // 蓝色系
+      { border: '#ff9800', background: 'rgba(255, 152, 0, 0.1)' }   // 橙色系
+    ];
+    const color = colors[index % colors.length];
+    const dataPoints = (node.history || []).map(h => h.players).join(', ');
+
+    return `
+      {
+        label: '${node.name}',
+        data: [${dataPoints}],
+        borderColor: '${color.border}',
+        backgroundColor: '${color.background}',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.3,
+        pointRadius: 2,
+        pointHoverRadius: 5
+      }`;
+  }).join(',\n');
+
+  // 输出完整的 Chart.js 原生初始化前端代码
+  return `
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ${labelsJson},
+        datasets: [${datasets}]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: { color: '#e0e0e0', font: { family: '-apple-system' } }
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { color: '#aaa', maxRotation: 45, minRotation: 45 }
+          },
+          y: {
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { color: '#aaa', beginAtZero: true, stepSize: 1 }
+          }
+        }
+      }
+    });
+  `;
+}
+
+// 主构建异步逻辑
+async function main() {
+  if (!fs.existsSync(statusFile)) {
+    console.error('❌ Error: current-status.json 找不到，请先执行 npm run fetch ！');
+    process.exit(1);
+  }
+
+  const statusData = JSON.parse(fs.readFileSync(statusFile, 'utf8'));
+  let html = fs.readFileSync(templateFile, 'utf8');
+
+  // 尝试下载 Chart.js 静态资源到本地 assets 目录进行离线加速优化
+  try {
+    const assetsDir = path.join(distDir, 'assets');
+    if (!fs.existsSync(assetsDir)) fs.mkdirSync(assetsDir, { recursive: true });
+    await downloadFile(
+      'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js',
+      path.join(assetsDir, 'chart.min.js')
+    );
+  } catch (err) {
+    console.log('⚠️  ⚠️ CDN 资源本地下载失败，将回退直接使用模板中的远程链接：', err.message);
+  }
+
+  // 计算当前的中国标准时间作为页面渲染戳
+  const buildTimeStr = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }) + ' (北京时间)';
+
+  // 全量占位符替换
+  html = html
+    .replace('{{SERVER_STATUS}}', statusData.onlineNodes > 0 ? '正常运行中' : '全线维护中')
+    .replace('{{SERVER_STATUS_CLASS}}', statusData.onlineNodes > 0 ? 'status-online' : 'status-offline')
     .replace('{{PLAYER_COUNT}}', String(statusData.totalPlayers || 0))
-    .replace('{{UPDATE_TIME}}', statusData.generatedAt || new Date().toLocaleString('zh-CN'))
+    .replace('{{UPDATE_TIME}}', formatToLocalTimezone(statusData.timestamp))
     .replace('{{ONLINE_NODES}}', String(statusData.onlineNodes || 0))
     .replace('{{TOTAL_NODES}}', String(statusData.totalNodes || 0))
     .replace('{{NODES_HTML}}', generateNodes(statusData.nodes))
     .replace('{{TIMELINE_HTML}}', generateTimeline(statusData.nodes))
     .replace('{{PLAYERS_HTML}}', generatePlayers(statusData.nodes))
     .replace('{{CHART_SCRIPT}}', generateChartScript(statusData.nodes))
-    .replace('{{BUILD_TIME}}', new Date().toLocaleString('zh-CN'));
+    .replace('{{BUILD_TIME}}', buildTimeStr);
 
-  // 替换 CDN 链接为本地链接（如果下载成功）
-  const localChartPath = './assets/chart.min.js';
+  // 如果本地有 chart.min.js，则动态将模板内的 cdn 链接覆盖成相对路径本地引用
   const fullChartPath = path.join(distDir, 'assets', 'chart.min.js');
   if (fs.existsSync(fullChartPath)) {
-    html = html.replace('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js', localChartPath);
-    html = html.replace('https://cdn.jsdelivr.net/npm/chart.js', localChartPath);
+    html = html.replace('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js', './assets/chart.min.js');
   }
 
-  // 写入 HTML
+  // 写入生成的生产 index.html
   fs.writeFileSync(path.join(distDir, 'index.html'), html);
+  console.log('✨ index.html 生成成功！');
 
-  // 复制样式
+  // 复制主样式表 style.css 到 dist
   const styleSrc = path.join(__dirname, '../style.css');
   const styleDest = path.join(distDir, 'style.css');
   if (fs.existsSync(styleSrc)) {
     fs.copyFileSync(styleSrc, styleDest);
+    console.log('🎨 style.css 样式同步完成！');
   }
 
-  console.log('✅ Build complete!');
-  console.log('📁 Output:', distDir);
-  console.log('📊 Size:', (fs.statSync(path.join(distDir, 'index.html')).size / 1024).toFixed(1), 'KB');
-
-  // 检查是否使用了本地资源
-  if (fs.existsSync(fullChartPath)) {
-    console.log('✅ Chart.js 已本地化');
-  } else {
-    console.log('⚠️  Chart.js 使用 CDN');
-  }
+  console.log('🚀 Build process completed successfully!');
 }
 
-build().catch(console.error);
+main().catch(err => {
+  console.error('❌ Build failed:', err);
+  process.exit(1);
+});
