@@ -19,94 +19,74 @@ if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-// 加载历史数据（支持从 GitHub Actions 缓存恢复）
+// 加载历史数据
 function loadHistory() {
   try {
     if (fs.existsSync(DATA_FILE)) {
-      const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-      console.log(`📚 Loaded history: ${Object.keys(data).length} nodes`);
-      return data;
+      return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
     }
   } catch (e) {
-    console.error('⚠️  Error loading history:', e.message);
+    console.error('⚠️ Error loading history, resetting:', e.message);
   }
   return {};
 }
 
 // 保存历史数据
-function saveHistory(history) {
+function saveHistory(data) {
   try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(history, null, 2));
-    console.log(`💾 Saved history to ${DATA_FILE}`);
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
   } catch (e) {
-    console.error('❌ Error saving history:', e.message);
+    console.error('⚠️ Error saving history:', e.message);
   }
 }
 
-// 检测单个节点（带重试）
-async function checkNode(node, retries = 2) {
-  for (let i = 0; i <= retries; i++) {
-    try {
-      const result = await util.status(node.host, node.port, { 
-        timeout: 10000,
-        enableSRV: true 
-      });
-
-      return {
-        online: true,
-        players: {
-          online: result.players.online,
-          max: result.players.max,
-          sample: result.players.sample || []
-        },
-        motd: result.motd ? result.motd.clean : "",
-        latency: result.roundTripLatency || null,
-        version: result.version ? result.version.name : null,
-        checkedAt: new Date().toISOString()
-      };
-    } catch (e) {
-      if (i === retries) {
-        return {
-          online: false,
-          players: { online: 0, max: 0, sample: [] },
-          error: e.message,
-          checkedAt: new Date().toISOString()
-        };
-      }
-      console.log(`  ⚠️  ${node.name} retry ${i + 1}/${retries}...`);
-      await new Promise(r => setTimeout(r, 1000));
-    }
+async function queryServer(node) {
+  try {
+    const result = await util.status(node.host, node.port, { timeout: 5000 });
+    return {
+      online: true,
+      players: {
+        online: result.players.online,
+        max: result.players.max,
+        sample: result.players.sample || []
+      },
+      latency: result.roundTripTime,
+      version: result.version.name,
+      motd: result.motd.clean
+    };
+  } catch (error) {
+    return {
+      online: false,
+      players: { online: 0, max: 0, sample: [] },
+      latency: 0,
+      version: "Unknown",
+      error: error.message
+    };
   }
 }
 
-// 主函数
-async function main() {
-  console.log('🔍 K2Cr2O7 Server Status Check');
-  console.log('==============================');
-  console.log(`⏰ ${new Date().toLocaleString('zh-CN')}`);
-  console.log('');
-
+async function run() {
+  console.log('🌐 Fetching Minecraft server status...');
   const history = loadHistory();
-  const timestamp = new Date().toISOString();
+  const timestamp = Date.now();
   const results = [];
   let totalOnline = 0;
 
   for (const node of NODES) {
-    process.stdout.write(`  Checking ${node.name}... `);
-    const status = await checkNode(node);
-
-    // 更新历史记录
+    console.log(`📡 Querying ${node.name} (${node.host}:${node.port})...`);
+    const status = await queryServer(node);
+    
     if (!history[node.id]) {
       history[node.id] = [];
     }
 
+    // 核心安全数据结构：time 作为回退文本，timestamp 作为前端高精度时间戳
     history[node.id].push({
-      time: new Date().getTime(), // 🔥 核心：改存纯数字时间戳，避免后端给时间定死时区
+      time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
       players: status.players.online,
       timestamp: timestamp
     });
 
-    // 只保留最近30条记录（约2.5小时，每5分钟一条）
     if (history[node.id].length > 30) {
       history[node.id].shift();
     }
@@ -121,16 +101,14 @@ async function main() {
     totalOnline += status.players.online;
 
     if (status.online) {
-      console.log(`🟢 ${status.players.online}/${status.players.max} players ${status.latency ? '(' + status.latency + 'ms)' : ''}`);
+      console.log(`🟢 ${status.players.online}/${status.players.max} players (${status.latency}ms)`);
     } else {
       console.log(`🔴 Offline - ${status.error}`);
     }
   }
 
-  // 保存历史数据
   saveHistory(history);
 
-  // 生成当前状态文件
   const statusData = {
     timestamp,
     generatedAt: new Date().toLocaleString('zh-CN'),
@@ -141,14 +119,7 @@ async function main() {
   };
 
   fs.writeFileSync(STATUS_FILE, JSON.stringify(statusData, null, 2));
-
-  console.log('');
-  console.log('✅ Status check complete');
-  console.log(`📊 Summary: ${statusData.onlineNodes}/${statusData.totalNodes} nodes online, ${totalOnline} players`);
-  console.log(`💾 Data saved to: ${DATA_FILE}`);
+  console.log('✅ Status updated successfully.');
 }
 
-main().catch(err => {
-  console.error('❌ Fatal error:', err);
-  process.exit(1);
-});
+run();
